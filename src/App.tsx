@@ -1,250 +1,293 @@
-import React, { useState, useEffect } from 'react';
-import { Sparkles, Moon, Sun, Heart, Star, Zap, Music2, Volume2, VolumeX, 
-         Flame, Cloud, Rainbow, CloudLightning as Lightning, Wind, Snowflake, 
-         Umbrella, Coffee, Rocket, Waves, Infinity, Compass, Flower2, 
-         PartyPopper, SettingsIcon as Confetti, Palette } from 'lucide-react';
+import React, { useState } from 'react';
+import { ThemeToggle } from './components/ui/ThemeToggle';
+import { ButtonGrid } from './components/buttons/ButtonGrid';
+import { FidgetContainer } from './components/fidget/FidgetContainer';
+import { useTheme } from './hooks/useTheme';
+import { Button } from './types';
+import { 
+  MousePointer2, 
+  Fingerprint, 
+  SlidersHorizontal, 
+  RotateCw,
+  Gamepad2
+} from 'lucide-react';
+
+const buttons: Button[] = [
+  { id: 'button1', text: 'Press Me!' },
+  { id: 'button2', text: 'Press Me!' },
+  { id: 'button3', text: 'Press Me!' },
+  { id: 'button4', text: 'Press Me!' },
+  { id: 'button5', text: 'Press Me!' },
+  { id: 'button6', text: 'Press Me!' },
+  { id: 'button7', text: 'Press Me!' },
+  { id: 'button8', text: 'Press Me!' },
+  { id: 'button9', text: 'Press Me!' },
+  { id: 'button10', text: 'Press Me!' },
+  { id: 'button11', text: 'Press Me!' },
+  { id: 'button12', text: 'Press Me!' },
+];
+
+const fidgetOptions = [
+  { id: 'buttons', label: 'Buttons', icon: Gamepad2 },
+  { id: 'pop', label: 'Pop', icon: Fingerprint },
+  { id: 'drag', label: 'Drag', icon: MousePointer2 },
+  { id: 'slide', label: 'Slide', icon: SlidersHorizontal },
+  { id: 'spin', label: 'Spin', icon: RotateCw }
+];
 
 function App() {
-  const [bgColor, setBgColor] = useState('bg-gray-100');
-  const [isDark, setIsDark] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [sparkleCount, setSparkleCount] = useState(0);
-  const [showHeart, setShowHeart] = useState(false);
-  const [pulseIndex, setPulseIndex] = useState(-1);
-  const [rocketPosition, setRocketPosition] = useState(0);
-  const [confettiActive, setConfettiActive] = useState(false);
-  const [wavesActive, setWavesActive] = useState(false);
-  const [rotationDegree, setRotationDegree] = useState(0);
-  const [flowerColor, setFlowerColor] = useState('text-pink-500');
-  const [partyMode, setPartyMode] = useState(false);
-  const [clickedButtons, setClickedButtons] = useState<{ [key: string]: boolean }>({});
-  const [floatingButtons, setFloatingButtons] = useState<{ [key: string]: boolean }>({});
-  const [rippleEffects, setRippleEffects] = useState<{ [key: string]: boolean }>({});
+  const { isDark, toggleTheme } = useTheme();
+  const [activeSection, setActiveSection] = useState('landing');
 
-  const colors = [
-    'bg-gray-100',
-    'bg-rose-100',
-    'bg-blue-100',
-    'bg-green-100',
-    'bg-purple-100',
-    'bg-yellow-100',
-    'bg-teal-100',
-    'bg-orange-100'
-  ];
-
-  const flowerColors = [
-    'text-pink-500',
-    'text-purple-500',
-    'text-blue-500',
-    'text-yellow-500',
-    'text-red-500'
-  ];
-
-  useEffect(() => {
-    if (partyMode) {
-      const interval = setInterval(() => {
-        setBgColor(colors[Math.floor(Math.random() * colors.length)]);
-      }, 500);
-      return () => clearInterval(interval);
-    }
-  }, [partyMode]);
-
-  const triggerButtonEffect = (buttonId: string) => {
-    setClickedButtons(prev => ({ ...prev, [buttonId]: true }));
-    setFloatingButtons(prev => ({ ...prev, [buttonId]: true }));
-    setRippleEffects(prev => ({ ...prev, [buttonId]: true }));
+  const renderContent = () => {
+    console.log('Current section:', activeSection);
     
-    setTimeout(() => {
-      setClickedButtons(prev => ({ ...prev, [buttonId]: false }));
-      setFloatingButtons(prev => ({ ...prev, [buttonId]: false }));
-      setRippleEffects(prev => ({ ...prev, [buttonId]: false }));
-    }, 1000);
-  };
-
-  const randomColor = () => {
-    let newColor;
-    do {
-      newColor = colors[Math.floor(Math.random() * colors.length)];
-    } while (newColor === bgColor);
-    setBgColor(newColor);
-    triggerButtonEffect('color');
-  };
-
-  const handleRocketClick = () => {
-    setRocketPosition(prev => (prev + 90) % 360);
-    triggerButtonEffect('rocket');
-  };
-
-  const handleConfettiClick = () => {
-    setConfettiActive(true);
-    triggerButtonEffect('confetti');
-    setTimeout(() => setConfettiActive(false), 1000);
-  };
-
-  const handleCompassClick = () => {
-    setRotationDegree(prev => prev + 90);
-    triggerButtonEffect('compass');
-  };
-
-  const handleFlowerClick = () => {
-    const newColor = flowerColors[Math.floor(Math.random() * flowerColors.length)];
-    setFlowerColor(newColor);
-    triggerButtonEffect('flower');
-  };
-
-  const renderButton = (id: string, icon: React.ReactNode, onClick?: () => void) => (
+    switch (activeSection) {
+      case 'landing':
+        return (
+          <div className={`
+            flex flex-col items-center justify-center gap-8 
+            max-w-4xl mx-auto text-center p-8
+            animate-in fade-in duration-500
+            mt-20 pb-16
+          `}>
+            <h1 className={`
+              text-6xl font-bold 
+              bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 
+              bg-clip-text text-transparent
+              animate-gradient-rotate
+              py-2
+            `}>
+              Welcome to Fidgeteer
+            </h1>
+            <p className={`
+              text-xl ${isDark ? 'text-gray-300' : 'text-gray-600'}
+              max-w-2xl
+              px-4
+            `}>
+              Your ultimate destination for digital fidgeting! Explore our collection of satisfying interactive elements designed to keep your hands busy and your mind engaged.
+            </p>
+            <div className="flex gap-4 flex-wrap justify-center px-4">
+              {fidgetOptions.map((option) => {
+                const Icon = option.icon;
+                return (
     <button
-      onClick={() => {
-        onClick?.();
-        triggerButtonEffect(id);
-      }}
-      className={`p-3 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 group relative
-        ${clickedButtons[id] ? 'animate-[shake_0.5s_ease-in-out]' : ''}
-        ${floatingButtons[id] ? 'animate-[float_1s_ease-in-out]' : ''}
-      `}
-    >
-      <div className="flex flex-col items-center justify-center gap-2">
-        {icon}
-        <span className="text-sm font-medium">Click me!</span>
+                    key={option.id}
+                    onClick={() => setActiveSection(option.id)}
+                    className={`
+                      relative px-6 py-3 rounded-full
+                      ${isDark 
+                        ? 'bg-transparent border-2 border-gray-700 hover:border-transparent' 
+                        : 'glass'}
+                      shadow-lg
+                      transition-all duration-300
+                      ${isDark ? 'text-white hover:shadow-[0_0_30px_rgba(139,92,246,0.6)]' : 'text-gray-800'}
+                      hover:scale-105
+                      font-medium
+                      group
+                      overflow-hidden
+                      flex items-center gap-3
+                    `}
+                  >
+                    {/* Gradient border overlay for dark mode */}
+                    {isDark && (
+                      <div className="
+                        absolute inset-0 
+                        rounded-full 
+                        opacity-0 
+                        group-hover:opacity-100
+                        transition-all
+                        duration-300
+                        before:absolute
+                        before:inset-0
+                        before:rounded-full
+                        before:p-[2px]
+                        before:bg-gradient-to-r
+                        before:from-indigo-500
+                        before:via-purple-500
+                        before:to-pink-500
+                        before:content-['']
+                        after:absolute
+                        after:inset-[2px]
+                        after:rounded-full
+                        after:bg-gray-900
+                        after:content-['']
+                      "/>
+                    )}
+                    {/* Sweeping Gradient Overlay */}
+                    <div className="
+                      absolute inset-0 opacity-0 group-hover:opacity-100 
+                      transition-opacity duration-300
+                      overflow-hidden rounded-full
+                    ">
+                      <div className={`
+                        absolute inset-0 bg-gradient-to-r from-transparent 
+                        ${isDark ? 'via-indigo-500/20' : 'via-indigo-400/20'} 
+                        to-transparent translate-x-[-100%]
+                        transition-transform duration-[2000ms] ease-in-out
+                        group-hover:translate-x-[100%]
+                        transform
+                      `} />
       </div>
-      {rippleEffects[id] && (
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0 bg-white/30 rounded-lg animate-[ripple_1s_ease-out]"></div>
-        </div>
-      )}
+                    <Icon className="w-5 h-5 relative z-10" />
+                    <span className="font-medium relative z-10">{option.label}</span>
     </button>
   );
+              })}
+            </div>
+          </div>
+        );
+      case 'buttons':
+        return <ButtonGrid buttons={buttons} isDark={isDark} />;
+      default:
+        return <FidgetContainer isDark={isDark} activeTab={activeSection} />;
+    }
+  };
 
   return (
-    <div className={`min-h-screen ${bgColor} transition-colors duration-500 p-4 ${isDark ? 'dark' : ''} overflow-hidden`}>
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Interactive Button Playground</h1>
-        
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-          {renderButton('color', 
-            <div className="w-5 h-5 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 animate-spin"></div>,
-            randomColor
+    <div className={`min-h-screen transition-all duration-500 ${
+      isDark ? 'bg-gradient-to-br from-gray-900 to-gray-800' : 'bg-gradient-to-br from-blue-50 to-indigo-100'
+    }`}>
+      {/* Detached Navigation Bar */}
+      <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-4xl px-4">
+        <div className={`
+          ${isDark ? 'bg-gray-800/90' : 'bg-white/90'} 
+          backdrop-blur-md
+          rounded-full
+          py-2 px-6
+          shadow-lg
+          flex items-center
+          border ${isDark ? 'border-gray-700' : 'border-gray-200'}
+          transition-all duration-300
+          hover:shadow-xl
+          hover:scale-[1.02]
+          ${isDark 
+            ? 'hover:bg-gray-800/95 hover:border-transparent hover:shadow-[0_0_30px_rgba(139,92,246,0.3)]' 
+            : 'hover:bg-white/95 hover:border-indigo-200 hover:shadow-[0_0_30px_rgba(99,102,241,0.2)]'}
+          w-full
+          relative
+          overflow-hidden
+          group
+        `}>
+          {/* Gradient border overlay for dark mode */}
+          {isDark && (
+            <div className="
+              absolute inset-0 
+              rounded-full 
+              opacity-0 
+              group-hover:opacity-100
+              transition-all
+              duration-300
+              before:absolute
+              before:inset-0
+              before:rounded-full
+              before:p-[1px]
+              before:bg-gradient-to-r
+              before:from-indigo-500
+              before:via-purple-500
+              before:to-pink-500
+              before:content-['']
+              after:absolute
+              after:inset-[1px]
+              after:rounded-full
+              after:bg-gray-800/90
+              after:content-['']
+              after:backdrop-blur-md
+            "/>
           )}
 
-          {renderButton('sparkle',
-            <Sparkles className="w-5 h-5 text-yellow-500" />,
-            () => setSparkleCount(prev => prev + 1)
-          )}
+          {/* Sweeping Gradient Overlay */}
+          <div className={`
+            absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300
+            overflow-hidden rounded-full
+          `}>
+            <div className={`
+              absolute inset-0 bg-gradient-to-r from-transparent 
+              ${isDark 
+                ? 'via-indigo-500/20' 
+                : 'via-indigo-400/20'} 
+              to-transparent translate-x-[-100%]
+              transition-transform duration-[2000ms] ease-in-out
+              group-hover:translate-x-[100%]
+              transform
+            `} />
+          </div>
 
-          {renderButton('theme',
-            <div className="relative w-5 h-5">
-              <Sun className={`w-5 h-5 text-yellow-500 absolute transition-opacity duration-300 ${isDark ? 'opacity-0' : 'opacity-100'}`} />
-              <Moon className={`w-5 h-5 text-blue-600 absolute transition-opacity duration-300 ${isDark ? 'opacity-100' : 'opacity-0'}`} />
-            </div>,
-            () => setIsDark(!isDark)
-          )}
+          {/* Website Name with Icon */}
+          <button
+            onClick={() => {
+              console.log('Navigating to landing page');
+              setActiveSection('landing');
+            }}
+            className={`
+              font-bold text-lg tracking-wider flex items-center gap-2
+              ${isDark ? 'text-white' : 'text-gray-800'}
+              transition-all duration-300
+              hover:scale-105 hover:text-indigo-500
+              cursor-pointer
+              group/title
+              relative
+            `}
+          >
+            <Gamepad2 className={`w-5 h-5 transition-colors duration-300 group-hover/title:text-indigo-500`} />
+            <span>FIDGETEER</span>
+            {/* Hover underline animation */}
+            <div className="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 scale-x-0 group-hover/title:scale-x-100 transition-transform duration-300" />
+          </button>
 
-          {renderButton('heart',
-            <Heart className={`w-5 h-5 ${showHeart ? 'text-red-500 fill-red-500 scale-125 animate-[burst_0.5s_ease-in-out]' : 'text-gray-400'} transition-all duration-300`} />,
-            () => setShowHeart(!showHeart)
-          )}
+          {/* Spacer */}
+          <div className="flex-grow" />
 
-          {renderButton('star',
-            <Star className="w-5 h-5 text-purple-500 group-hover:rotate-180 transition-transform duration-500" />
-          )}
-
-          {renderButton('sound',
-            <div className="relative w-5 h-5">
-              <Volume2 className={`w-5 h-5 text-green-500 absolute transition-transform duration-300 ${isPlaying ? 'scale-100' : 'scale-0'}`} />
-              <VolumeX className={`w-5 h-5 text-red-500 absolute transition-transform duration-300 ${isPlaying ? 'scale-0' : 'scale-100'}`} />
-            </div>,
-            () => setIsPlaying(!isPlaying)
-          )}
-
-          {renderButton('zap',
-            <Zap className="w-5 h-5 text-yellow-500 group-hover:animate-[bounce_0.5s_infinite]" />
-          )}
-
-          {renderButton('music',
-            <Music2 className="w-5 h-5 text-indigo-500 group-hover:animate-[bounce_1s_infinite]" />
-          )}
-
-          {renderButton('fire',
-            <Flame className={`w-5 h-5 text-orange-500 ${pulseIndex === 9 ? 'animate-ping' : ''}`} />,
-            () => setPulseIndex(9)
-          )}
-
-          {renderButton('cloud',
-            <Cloud className="w-5 h-5 text-blue-400 group-hover:translate-x-2 transition-transform" />
-          )}
-
-          {renderButton('rainbow',
-            <Rainbow className="w-5 h-5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r from-red-500 via-yellow-500 to-blue-500" />
-          )}
-
-          {renderButton('lightning',
-            <Lightning className="w-5 h-5 text-yellow-600 group-hover:scale-125 transition-transform" />
-          )}
-
-          {renderButton('wind',
-            <Wind className={`w-5 h-5 text-blue-300 transition-transform duration-300 ${wavesActive ? 'translate-x-2' : ''}`} />,
-            () => setWavesActive(!wavesActive)
-          )}
-
-          {renderButton('snow',
-            <Snowflake className="w-5 h-5 text-blue-200 group-hover:rotate-[180deg] transition-transform duration-500" />
-          )}
-
-          {renderButton('rain',
-            <Umbrella className="w-5 h-5 text-gray-600 group-hover:-translate-y-1 transition-transform" />
-          )}
-
-          {renderButton('coffee',
-            <div className="relative">
-              <Coffee className="w-5 h-5 text-brown-600 group-hover:animate-bounce" />
-              <div className="absolute -top-1 left-1/2 w-2 h-2 bg-brown-200 rounded-full opacity-0 group-hover:animate-ping group-hover:opacity-100"></div>
+          {/* Right Section with Options and Theme Toggle */}
+          <div className="flex items-center gap-4">
+            {/* Center Section with Options */}
+            <div className="flex items-center gap-2">
+              {fidgetOptions.map((option) => {
+                const Icon = option.icon;
+                return (
+                  <button
+                    key={option.id}
+                    onClick={() => setActiveSection(option.id)}
+                    className={`
+                      relative p-2 rounded-full flex items-center gap-2
+                      transition-all duration-300
+                      ${activeSection === option.id 
+                        ? `${isDark ? 'bg-indigo-600 text-white' : 'bg-indigo-100 text-indigo-600'}`
+                        : `${isDark ? 'text-gray-400 hover:text-white hover:bg-gray-700/50' : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-100'}`
+                      }
+                      before:absolute before:inset-0 before:rounded-full before:transition-all before:duration-300
+                      before:opacity-0 hover:before:opacity-100
+                      ${isDark 
+                        ? 'before:bg-gray-700/50'
+                        : 'before:bg-gray-100'
+                      }
+                      before:-z-10
+                    `}
+                  >
+                    <Icon className="w-4 h-4 relative z-0" />
+                    <span className={`
+                      text-sm font-medium whitespace-nowrap relative z-0
+                      ${activeSection === option.id ? 'opacity-100 max-w-[80px]' : 'opacity-0 max-w-0'}
+                      transition-all duration-300 overflow-hidden
+                    `}>
+                      {option.label}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
-          )}
 
-          {renderButton('rocket',
-            <Rocket 
-              className="w-5 h-5 text-blue-500 transition-transform duration-500"
-              style={{ transform: `rotate(${rocketPosition}deg)` }}
-            />,
-            handleRocketClick
-          )}
-
-          {renderButton('wave',
-            <Waves className="w-5 h-5 text-blue-400" />,
-            () => setWavesActive(!wavesActive)
-          )}
-
-          {renderButton('infinity',
-            <Infinity className="w-5 h-5 text-purple-500 group-hover:animate-[spin_2s_linear_infinite]" />
-          )}
-
-          {renderButton('compass',
-            <Compass 
-              className="w-5 h-5 text-red-500 transition-transform duration-500"
-              style={{ transform: `rotate(${rotationDegree}deg)` }}
-            />,
-            handleCompassClick
-          )}
-
-          {renderButton('flower',
-            <Flower2 className={`w-5 h-5 ${flowerColor} transition-colors duration-300 group-hover:rotate-45`} />,
-            handleFlowerClick
-          )}
-
-          {renderButton('party',
-            <PartyPopper className={`w-5 h-5 ${partyMode ? 'text-yellow-500 animate-bounce' : 'text-gray-500'}`} />,
-            () => setPartyMode(!partyMode)
-          )}
-
-          {renderButton('confetti',
-            <Confetti className="w-5 h-5 text-pink-500" />,
-            handleConfettiClick
-          )}
-
-          {renderButton('palette',
-            <Palette className="w-5 h-5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500" />
-          )}
+            {/* Theme Toggle */}
+            <div className="pl-6 border-l border-gray-200 dark:border-gray-700 flex items-center ml-2">
+              <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
+            </div>
+          </div>
         </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="min-h-screen flex items-center justify-center p-4">
+        {renderContent()}
       </div>
     </div>
   );
