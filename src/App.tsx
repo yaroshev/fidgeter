@@ -154,7 +154,7 @@ function App() {
           ${isDark ? 'bg-gray-800/90' : 'bg-white/90'} 
           backdrop-blur-md
           rounded-full
-          py-2 px-6
+          py-3 px-8
           shadow-lg
           flex items-center
           border ${isDark ? 'border-gray-700' : 'border-gray-200'}
@@ -239,9 +239,9 @@ function App() {
           <div className="flex-grow" />
 
           {/* Right Section with Options and Theme Toggle */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center">
             {/* Center Section with Options */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 mr-6">
               {fidgetOptions.map((option) => {
                 const Icon = option.icon;
                 return (
@@ -252,22 +252,17 @@ function App() {
                       relative p-2 rounded-full flex items-center gap-2
                       transition-all duration-300
                       ${activeSection === option.id 
-                        ? `${isDark ? 'bg-indigo-600 text-white' : 'bg-indigo-100 text-indigo-600'}`
-                        : `${isDark ? 'text-gray-400 hover:text-white hover:bg-gray-700/50' : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-100'}`
+                        ? `${isDark ? 'text-indigo-500 font-semibold' : 'text-indigo-600 font-semibold'}`
+                        : `${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-indigo-600'}`
                       }
-                      before:absolute before:inset-0 before:rounded-full before:transition-all before:duration-300
-                      before:opacity-0 hover:before:opacity-100
-                      ${isDark 
-                        ? 'before:bg-gray-700/50'
-                        : 'before:bg-gray-100'
-                      }
+                      hover:scale-110
                       before:-z-10
                     `}
                   >
-                    <Icon className="w-4 h-4 relative z-0" />
+                    <Icon className={`w-4 h-4 relative z-0 ${activeSection === option.id ? 'stroke-[2.5px]' : ''}`} />
                     <span className={`
-                      text-sm font-medium whitespace-nowrap relative z-0
-                      ${activeSection === option.id ? 'opacity-100 max-w-[80px]' : 'opacity-0 max-w-0'}
+                      text-sm whitespace-nowrap relative z-0
+                      ${activeSection === option.id ? 'opacity-100 max-w-[80px] font-medium' : 'opacity-0 max-w-0'}
                       transition-all duration-300 overflow-hidden
                     `}>
                       {option.label}
@@ -278,8 +273,12 @@ function App() {
             </div>
 
             {/* Theme Toggle */}
-            <div className="pl-6 border-l border-gray-200 dark:border-gray-700 flex items-center ml-2">
-              <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
+            <div className="flex items-center relative">
+              {/* Separator as a separate element */}
+              <div className={`absolute left-0 top-1/2 -translate-y-1/2 h-[60%] w-[1px] ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}></div>
+              <div className="pl-6">
+                <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
+              </div>
             </div>
           </div>
         </div>
